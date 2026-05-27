@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "api/upload.js": {
+      "maxDuration": 30
+    },
+    "api/chat.js": {
+      "maxDuration": 15
+    }
+  }
+}
