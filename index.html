@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TBO Partner Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0B1E3F;
+      --navy-light: #1A3A6C;
+      --coral: #E76F51;
+      --coral-soft: #F4A261;
+      --sand: #F5EFE6;
+      --cream: #FAF7F2;
+      --ink: #1A1A1A;
+      --muted: #6B7280;
+      --border: #E5E0D8;
+      --success: #2A9D8F;
+      --error: #E63946;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar */
+    .topbar {
+      background: var(--navy);
+      color: white;
+      padding: 18px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--coral);
+    }
+    .brand {
+      font-family: 'Fraunces', serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+    .brand span { color: var(--coral-soft); }
+    .topbar .meta {
+      font-size: 13px;
+      opacity: 0.8;
+      letter-spacing: 0.5px;
+    }
+
+    /* Main layout */
+    .container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      gap: 0;
+    }
+
+    /* Chat panel */
+    .chat-panel {
+      display: flex;
+      flex-direction: column;
+      background: var(--cream);
+      border-right: 1px solid var(--border);
+      min-height: calc(100vh - 70px);
+    }
+
+    .chat-header {
+      padding: 32px 48px 24px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+    .chat-header .eyebrow {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      color: var(--coral);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .chat-header h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 30px;
+      font-weight: 500;
+      color: var(--navy);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .chat-header p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    #chat {
+      flex: 1;
+      padding: 32px 48px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .msg {
+      max-width: 78%;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: 15px;
+      line-height: 1.55;
+      animation: fadeIn 0.3s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .msg.bot {
+      background: white;
+      color: var(--ink);
+      border: 1px solid var(--border);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .msg.user {
+      background: var(--navy);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.system {
+      background: var(--sand);
+      color: var(--navy);
+      align-self: center;
+      font-size: 13px;
+      font-style: italic;
+      padding: 8px 16px;
+      max-width: none;
+      border-radius: 20px;
+    }
+    .msg .label {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--coral);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .msg.user .label { color: var(--coral-soft); }
+    .msg.typing {
+      color: var(--muted);
+      font-style: italic;
+    }
+    .msg.typing::after {
+      content: '...';
+      display: inline-block;
+      animation: dots 1.4s infinite;
+    }
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+
+    /* Extracted data card inside chat */
+    .extract-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--success);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin: 4px 0;
+      max-width: 78%;
+      align-self: flex-start;
+    }
+    .extract-card .head {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--success);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .extract-card .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .extract-card .row:last-child { border-bottom: none; }
+    .extract-card .key { color: var(--muted); }
+    .extract-card .val { color: var(--ink); font-weight: 500; text-align: right; }
+
+    /* Input area */
+    .input-area {
+      padding: 20px 48px 28px;
+      background: white;
+      border-top: 1px solid var(--border);
+    }
+    .input-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+    #userInput {
+      flex: 1;
+      padding: 14px 18px;
+      font-size: 15px;
+      font-family: inherit;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: var(--cream);
+      transition: border-color 0.2s, background 0.2s;
+      resize: none;
+      min-height: 50px;
+      max-height: 120px;
+    }
+    #userInput:focus {
+      border-color: var(--navy);
+      background: white;
+    }
+    .upload-btn, .send-btn {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: all 0.15s;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .upload-btn {
+      background: white;
+      color: var(--navy);
+      border: 1.5px solid var(--border);
+      padding: 0 16px;
+      border-radius: 10px;
+      font-size: 14px;
+      gap: 8px;
+    }
+    .upload-btn:hover { border-color: var(--navy); background: var(--sand); }
+    .send-btn {
+      background: var(--navy);
+      color: white;
+      padding: 0 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+    .send-btn:hover { background: var(--navy-light); }
+    .send-btn:disabled { background: var(--muted); cursor: not-allowed; }
+    #fileInput { display: none; }
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+      letter-spacing: 0.2px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: white;
+      padding: 32px 32px;
+      border-left: 1px solid var(--border);
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 20px;
+      color: var(--navy);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .sidebar .sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .step {
+      display: flex;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+    .step:last-of-type { border-bottom: none; }
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--sand);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+    .step.done .step-num {
+      background: var(--success);
+      color: white;
+    }
+    .step.done .step-num::after {
+      content: '✓';
+      font-size: 14px;
+    }
+    .step.done .step-num span { display: none; }
+    .step.active .step-num {
+      background: var(--coral);
+      color: white;
+    }
+    .step-body { flex: 1; }
+    .step-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .step.done .step-title { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--border); }
+    .step-desc {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .summary-btn {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      background: var(--coral);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .summary-btn:hover { background: #d65a3d; }
+    .summary-btn:disabled {
+      background: var(--border);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* Summary modal */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 30, 63, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+    .modal-bg.show { display: flex; }
+    .modal {
+      background: var(--cream);
+      max-width: 720px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .modal .eyebrow {
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      color: var(--coral);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .modal h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 28px;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .modal p.intro {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .summary-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+    .summary-section h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 16px;
+      color: var(--navy);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 0;
+      font-size: 14px;
+    }
+    .summary-row .k { color: var(--muted); }
+    .summary-row .v { color: var(--ink); font-weight: 500; text-align: right; max-width: 60%; }
+    .summary-empty { color: var(--muted); font-size: 13px; font-style: italic; }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .modal-actions .close-btn {
+      background: white;
+      color: var(--navy);
+      border: 1.5px solid var(--border);
+    }
+    .modal-actions .download-btn {
+      background: var(--navy);
+      color: white;
+    }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .container { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .chat-header, #chat, .input-area { padding-left: 24px; padding-right: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">TBO<span>.</span> Partner Onboarding</div>
+    <div class="meta">Helpdesk · Live Assistant</div>
+  </header>
+
+  <div class="container">
+    <main class="chat-panel">
+      <div class="chat-header">
+        <div class="eyebrow">Welcome</div>
+        <h1>Let's get your agency onboarded</h1>
+        <p>I'll guide you step by step. Type your responses, or upload documents when asked.</p>
+      </div>
+
+      <div id="chat"></div>
+
+      <div class="input-area">
+        <div class="input-row">
+          <button class="upload-btn" id="uploadBtn" title="Upload a document">
+            📎 Upload Document
+          </button>
+          <input type="file" id="fileInput" accept=".pdf,.jpg,.jpeg,.png" />
+          <textarea id="userInput" placeholder="Type your message..." rows="1"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+        </div>
+        <div class="hint">Supported documents: PDF, JPG, PNG · Max 10 MB</div>
+      </div>
+    </main>
+
+    <aside class="sidebar">
+      <h2>Onboarding Checklist</h2>
+      <p class="sub">Track your progress here</p>
+
+      <div class="step" id="step-company">
+        <div class="step-num"><span>1</span></div>
+        <div class="step-body">
+          <div class="step-title">Company Information</div>
+          <div class="step-desc">Agency name, contact, business type</div>
+        </div>
+      </div>
+      <div class="step" id="step-pan">
+        <div class="step-num"><span>2</span></div>
+        <div class="step-body">
+          <div class="step-title">PAN Card</div>
+          <div class="step-desc">Company or proprietor PAN</div>
+        </div>
+      </div>
+      <div class="step" id="step-gst">
+        <div class="step-num"><span>3</span></div>
+        <div class="step-body">
+          <div class="step-title">GST Certificate</div>
+          <div class="step-desc">Active GSTIN registration</div>
+        </div>
+      </div>
+      <div class="step" id="step-coi">
+        <div class="step-num"><span>4</span></div>
+        <div class="step-body">
+          <div class="step-title">Company Registration</div>
+          <div class="step-desc">Incorporation or partnership doc</div>
+        </div>
+      </div>
+      <div class="step" id="step-confirm">
+        <div class="step-num"><span>5</span></div>
+        <div class="step-body">
+          <div class="step-title">Review & Submit</div>
+          <div class="step-desc">Confirm extracted details</div>
+        </div>
+      </div>
+
+      <button class="summary-btn" id="summaryBtn" onclick="showSummary()">View Summary</button>
+    </aside>
+  </div>
+
+  <!-- Summary modal -->
+  <div class="modal-bg" id="modal" onclick="if(event.target===this) closeSummary()">
+    <div class="modal">
+      <div class="eyebrow">Onboarding Summary</div>
+      <h2>Collected Details</h2>
+      <p class="intro">Review the information extracted from your documents and provided in chat.</p>
+      <div id="summaryContent"></div>
+      <div class="modal-actions">
+        <button class="close-btn" onclick="closeSummary()">Close</button>
+        <button class="download-btn" onclick="downloadJSON()">Download as JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+
+    // Conversation history sent to the model
+    let history = [];
+
+    // Collected data shown in summary
+    let collected = {
+      company: {},
+      pan: {},
+      gst: {},
+      coi: {}
+    };
+
+    function addMessage(text, who, opts = {}) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + who + (opts.typing ? ' typing' : '');
+      if (opts.label) {
+        const lbl = document.createElement('span');
+        lbl.className = 'label';
+        lbl.textContent = opts.label;
+        div.appendChild(lbl);
+      }
+      const textNode = document.createElement('div');
+      textNode.textContent = text;
+      div.appendChild(textNode);
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+      return div;
+    }
+
+    function addExtractCard(title, data) {
+      const card = document.createElement('div');
+      card.className = 'extract-card';
+      const head = document.createElement('div');
+      head.className = 'head';
+      head.textContent = '✓ Extracted from ' + title;
+      card.appendChild(head);
+      Object.entries(data).forEach(([k, v]) => {
+        if (!v) return;
+        const row = document.createElement('div');
+        row.className = 'row';
+        const key = document.createElement('span');
+        key.className = 'key';
+        key.textContent = formatKey(k);
+        const val = document.createElement('span');
+        val.className = 'val';
+        val.textContent = v;
+        row.appendChild(key);
+        row.appendChild(val);
+        card.appendChild(row);
+      });
+      chat.appendChild(card);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function formatKey(k) {
+      return k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    }
+
+    function markStep(id, state) {
+      const el = document.getElementById('step-' + id);
+      if (!el) return;
+      el.classList.remove('active', 'done');
+      if (state) el.classList.add(state);
+    }
+
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      addMessage(text, 'user', { label: 'You' });
+      input.value = '';
+      input.style.height = 'auto';
+      sendBtn.disabled = true;
+      const typing = addMessage('', 'bot', { typing: true, label: 'TBO Assistant' });
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history: history, collected: collected })
+        });
+        const data = await res.json();
+        typing.remove();
+        if (data.reply) {
+          addMessage(data.reply, 'bot', { label: 'TBO Assistant' });
+          history.push({ role: 'user', text: text });
+          history.push({ role: 'model', text: data.reply });
+          if (history.length > 30) history = history.slice(-30);
+
+          // Apply any collected updates that the model identified
+          if (data.collected_updates) {
+            mergeCollected(data.collected_updates);
+          }
+          updateChecklist();
+        } else {
+          addMessage("I had trouble responding. Could you try again?", 'bot', { label: 'TBO Assistant' });
+        }
+      } catch (err) {
+        typing.remove();
+        addMessage("Network issue. Please try again.", 'bot', { label: 'TBO Assistant' });
+      }
+      sendBtn.disabled = false;
+      input.focus();
+    }
+
+    function mergeCollected(updates) {
+      Object.entries(updates).forEach(([section, fields]) => {
+        if (!collected[section]) collected[section] = {};
+        Object.entries(fields).forEach(([k, v]) => {
+          if (v) collected[section][k] = v;
+        });
+      });
+    }
+
+    function updateChecklist() {
+      // mark steps done based on collected
+      if (collected.company && (collected.company.agency_name || collected.company.contact_name)) {
+        markStep('company', 'done');
+      }
+      if (collected.pan && collected.pan.pan_number) markStep('pan', 'done');
+      if (collected.gst && collected.gst.gstin) markStep('gst', 'done');
+      if (collected.coi && (collected.coi.registration_number || collected.coi.entity_type)) markStep('coi', 'done');
+
+      const allDone = ['company','pan','gst','coi'].every(k => {
+        const sec = collected[k];
+        if (!sec) return false;
+        return Object.keys(sec).length > 0;
+      });
+      if (allDone) markStep('confirm', 'active');
+    }
+
+    async function handleFileUpload(file) {
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        addMessage("That file is over 10 MB. Could you compress it or share a smaller version?", 'bot', { label: 'TBO Assistant' });
+        return;
+      }
+
+      addMessage(`Uploaded: ${file.name}`, 'user', { label: 'You · Document' });
+      const typing = addMessage('Reading the document...', 'bot', { typing: true, label: 'TBO Assistant' });
+
+      try {
+        // Convert to base64
+        const base64 = await fileToBase64(file);
+
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            filename: file.name,
+            mime_type: file.type,
+            data: base64
+          })
+        });
+        const data = await res.json();
+        typing.remove();
+
+        if (data.error) {
+          addMessage("I couldn't read that document. " + data.error, 'bot', { label: 'TBO Assistant' });
+          return;
+        }
+
+        // Show what was extracted
+        if (data.doc_type && data.fields) {
+          const title = data.doc_type === 'pan' ? 'PAN Card'
+                      : data.doc_type === 'gst' ? 'GST Certificate'
+                      : data.doc_type === 'coi' ? 'Company Registration'
+                      : 'Document';
+          addExtractCard(title, data.fields);
+
+          // merge into collected
+          if (data.doc_type === 'pan') collected.pan = { ...collected.pan, ...data.fields };
+          else if (data.doc_type === 'gst') collected.gst = { ...collected.gst, ...data.fields };
+          else if (data.doc_type === 'coi') collected.coi = { ...collected.coi, ...data.fields };
+
+          updateChecklist();
+        }
+
+        if (data.reply) {
+          addMessage(data.reply, 'bot', { label: 'TBO Assistant' });
+          history.push({ role: 'user', text: `[Uploaded ${file.name}]` });
+          history.push({ role: 'model', text: data.reply });
+        }
+      } catch (err) {
+        typing.remove();
+        addMessage("Something went wrong reading the document. Could you try again?", 'bot', { label: 'TBO Assistant' });
+      }
+    }
+
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          // strip "data:...;base64," prefix
+          const result = reader.result;
+          const comma = result.indexOf(',');
+          resolve(comma >= 0 ? result.slice(comma + 1) : result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function showSummary() {
+      const container = document.getElementById('summaryContent');
+      container.innerHTML = '';
+
+      const sections = [
+        { key: 'company', title: 'Company Information' },
+        { key: 'pan', title: 'PAN Card' },
+        { key: 'gst', title: 'GST Certificate' },
+        { key: 'coi', title: 'Company Registration' }
+      ];
+
+      sections.forEach(sec => {
+        const data = collected[sec.key] || {};
+        const sectionEl = document.createElement('div');
+        sectionEl.className = 'summary-section';
+        const h3 = document.createElement('h3');
+        h3.textContent = sec.title;
+        sectionEl.appendChild(h3);
+
+        const entries = Object.entries(data).filter(([k, v]) => v);
+        if (entries.length === 0) {
+          const empty = document.createElement('div');
+          empty.className = 'summary-empty';
+          empty.textContent = 'Not provided yet';
+          sectionEl.appendChild(empty);
+        } else {
+          entries.forEach(([k, v]) => {
+            const row = document.createElement('div');
+            row.className = 'summary-row';
+            const ks = document.createElement('span');
+            ks.className = 'k';
+            ks.textContent = formatKey(k);
+            const vs = document.createElement('span');
+            vs.className = 'v';
+            vs.textContent = v;
+            row.appendChild(ks);
+            row.appendChild(vs);
+            sectionEl.appendChild(row);
+          });
+        }
+        container.appendChild(sectionEl);
+      });
+
+      document.getElementById('modal').classList.add('show');
+    }
+
+    function closeSummary() {
+      document.getElementById('modal').classList.remove('show');
+    }
+
+    function downloadJSON() {
+      const blob = new Blob([JSON.stringify(collected, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tbo_onboarding_' + Date.now() + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Wire up events
+    uploadBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) handleFileUpload(file);
+      fileInput.value = '';
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    input.addEventListener('input', () => {
+      input.style.height = 'auto';
+      input.style.height = Math.min(input.scrollHeight, 120) + 'px';
+    });
+
+    // Greeting
+    markStep('company', 'active');
+    addMessage("Hello, and welcome to TBO. I'm here to help you onboard as a partner travel agent. We'll need a few documents and basic details about your agency. To begin, may I know your agency name and the name of the person I'm speaking with?", 'bot', { label: 'TBO Assistant' });
+  </script>
+</body>
+</html>
